@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script>
+    function send(){
+      let value = document.querySelector('input').value;
+
+      console.log(value)
+
+      value = Number(value)
+
+      if(isNaN(value) ){
+        alert("Введите число")
+        return
+      }
+
+      if(value > 10 || value < 1){
+        alert("Число должно быть от 1 до 10")
+        return
+      }
+
+      let url = 'https://picsum.photos/v2/list?limit=' + value
+
+      console.log(url)
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function() {
+        console.log(`Статус: ${xhr.status}; Результат: ${xhr.response}`)
+        console.log(xhr.response)
+
+        let div = document.querySelector('.images');
+
+        const images = JSON.parse(xhr.response);
+
+        console.log(images)
+
+        images.forEach((image)=>{
+                  let a = div.innerHTML;
+                  let b = `<img width="500px" src="${image.download_url}">`
+                  let c = a+b;
+                  div.innerHTML = c;
+
+                  console.log(image)
+                }
+        )
+      };
+
+      xhr.onerror = function() {
+        console.log('Ошибка запроса');
+      };
+
+      xhr.open("get", url, true);
+      xhr.send();
+    }
+
+  </script>
+</head>
+<body>
+<input>
+<button onclick="send()">Send</button>
+<div class="images">
+</div>
+
+</body>
+</html>
