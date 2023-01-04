@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script>
+    function send() {
+      let page = document.querySelector('#number1').value;
+      let limit = document.querySelector('#number2').value;
+
+
+      console.log(page)
+      console.log(limit)
+
+
+      page = Number(page)
+      limit = Number(limit)
+
+      let pageVneDiapozona = page > 10 || page < 1;
+      let limitVneDiapozona = limit > 10 || limit < 1;
+
+
+      if (
+              (isNaN(page) && isNaN(limit))
+              || (
+                      pageVneDiapozona
+                      && limitVneDiapozona
+              )
+      ) {
+        alert("Номер страницы и лимит вне диапазона от 1 до 10")
+        return;
+      }
+
+      if (isNaN(page) || pageVneDiapozona) {
+        alert("Номер страницы вне диапазона от 1 до 10")
+        return
+      }
+
+      if (isNaN(limit) || limitVneDiapozona) {
+        alert("Лимит вне диапазона от 1 до 10")
+        return
+      }
+
+      let url = `https://picsum.photos/v2/list?page=${page}&limit=${limit}`
+
+      console.log(url);
+
+      fetch(url)
+              .then(response => response.json())
+              .then((data) => {
+                let jsonData = JSON.stringify(data)
+                localStorage.setItem('data', jsonData);
+                renderData(data)
+                console.log(data)
+              });
+    }
+
+    function renderData(data) {
+      let div = document.querySelector('#images');
+      div.innerHTML = ''
+      data.forEach((image) => {
+        let a = div.innerHTML;
+        let b = `<img width="500px" src="${image.download_url}">`;
+        let c = a + b
+        div.innerHTML = c;
+      })
+    }
+
+
+  </script>
+</head>
+<body>
+<label for="number1">Номер страницы</label>
+<input id="number1">
+<label for="number2">Лимит</label>
+<input id="number2">
+<button onclick="send()">Запрос</button>
+<div id="images">
+
+</div>
+<script>
+
+  let jsonData = localStorage.getItem('data')
+  let data = JSON.parse(jsonData)
+  console.log(data)
+
+  if (data !== undefined) {
+    renderData(data)
+  }
+</script>
+</body>
+</html>
